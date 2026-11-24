@@ -11,6 +11,8 @@ import { mkdirSync, readFileSync, writeFileSync } from 'node:fs';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
+import { stageKeycloak } from './keycloak.ts';
+
 import {
   containerClients,
   labDatabaseKeys,
@@ -50,12 +52,21 @@ function render(template: string, values: Record<string, string>): string {
   return Object.entries(values).reduce((text, [key, value]) => text.replaceAll(`{{${key}}}`, value), readFileSync(join(LAB_DIR, 'identity', template), 'utf8'));
 }
 
-/** Directory entries and realm for Keycloak, with this run's secrets. */
-export function writeIdentityFiles(workdir: string, values: Record<'ANA_PASSWORD' | 'BRUNO_PASSWORD' | 'CLIENT_SECRET' | 'EXAMPLE_CLIENT_SECRET' | 'LDAP_ADMIN_PASSWORD', string>): void {
+type IdentityValues = 'ANA_PASSWORD' | 'BRUNO_PASSWORD' | 'CLIENT_SECRET' | 'EXAMPLE_CLIENT_SECRET' | 'LDAP_ADMIN_PASSWORD'
+  | 'CARLA_PASSWORD' | 'CARLA_OTP_SECRET' | 'PARTNER_CLIENT_SECRET';
+
+/**
+ * Directory entries and realms for Keycloak, with this run's secrets: `internal` (directory
+ * accounts, ADR-0009) and `external` (local accounts with the second factor, ADR-0018). Also
+ * copies the login theme and the extensions Keycloak mounts.
+ */
+export function writeIdentityFiles(workdir: string, values: Record<IdentityValues, string>): void {
   mkdirSync(join(workdir, 'ldif'), { recursive: true });
   mkdirSync(join(workdir, 'realm'), { recursive: true });
   writeFileSync(join(workdir, 'ldif', '50-directory.ldif'), render('directory.ldif.template', values));
   writeFileSync(join(workdir, 'realm', 'internal-realm.json'), render('realm.json.template', values));
+  writeFileSync(join(workdir, 'realm', 'external-realm.json'), render('external-realm.json.template', values));
+  stageKeycloak(workdir);
 }
 
 /** The laboratory certificate authority and server certificate, mounted by both engines. */
