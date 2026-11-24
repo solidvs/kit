@@ -34,7 +34,7 @@
     "build": "tsc -p tsconfig.build.json",
     "typecheck": "tsc -p tsconfig.json --noEmit",
     "test": "vitest run",
-    "test:lab": "vitest run --config vitest.lab.config.ts test-lab/identity.e2e.test.ts",
+    "test:lab": "vitest run --config vitest.lab.config.ts test-lab/identity.e2e.test.ts test-lab/remembered-device.e2e.test.ts",
     "test:lab:data": "vitest run --config vitest.lab.config.ts test-lab/data.e2e.test.ts"
   },
   "dependencies": {

@@ -6,7 +6,8 @@ The two packages every system of the standard stack is built on.
 |---|---|---|
 | [`@solidvs/server`](packages/server) | Configuration from the platform file, sign-in through the organization's OpenID Connect provider (Keycloak federated to Active Directory), server-side sessions, the access rule, CSRF protection, roles, rate limiting, security headers, structured logs and the health endpoint, for NestJS. The data layer: Prisma on PostgreSQL or SQL Server, the insert-only audit trail, the `solidvs-data` command (schema per engine, migrations, laboratory database) and the database provisioning procedure | ADR-0009, ADR-0016 |
 | [`@solidvs/ui`](packages/ui) | Platform components on Base UI and dnd-kit: tokens (light by default), fonts, icons, application shell (top nav, side nav with "Projetos"), project page and board. Fidelity checked by the screenshot gallery in [`packages/gallery`](packages/gallery) | ADR-0011 |
-| [`keycloak-theme`](packages/keycloak-theme) | Login theme of the identity provider in the platform design system (tokens, text field and button of `@solidvs/ui`, Inter). System name and logo come from the client (Name, Logo URL); the password link from the realm text `platformForgotPasswordUrl`. Built into `dist/platform`, mounted by the identity laboratory | ADR-0011 |
+| [`keycloak-theme`](packages/keycloak-theme) | Login theme of the identity provider in the platform design system (tokens, text field and button of `@solidvs/ui`, Inter). System name and logo come from the client (Name, Logo URL); the password link from the realm text `platformForgotPasswordUrl`. The second-factor page carries "Confiar neste dispositivo" and the warning that IT never asks for the code. Built into `dist/platform`, mounted by the identity laboratory | ADR-0011, ADR-0018 |
+| [`keycloak-extensions`](packages/keycloak-extensions) | Keycloak extensions in Java, built in a container (Docker only): the condition "second factor needed" (every sign-in, never, or only on a device not remembered, by realm policy), the step that remembers a device after the second factor, and the listener that forgets a person's devices when the password changes. A remembered device is a credential of the person, stored as a hash, rotated at each use; a reused old secret forgets every device. Built into `dist/solidvs-keycloak-extensions.jar` | ADR-0018 |
 
 ADRs live in `solidvs/standard` (`stack/decisions/`). Library choices of this repository:
 [`docs/decisions/0001-library-pins.md`](docs/decisions/0001-library-pins.md).
@@ -136,7 +137,8 @@ Node.js 24 and pnpm (version in `package.json`, through `corepack enable`).
 ```sh
 pnpm install
 pnpm typecheck && pnpm test && pnpm build
-pnpm --filter @solidvs/server test:lab   # needs Docker: Keycloak + LDAP, real sign-in
+pnpm --filter @solidvs/keycloak-theme build && pnpm --filter @solidvs/keycloak-extensions build
+pnpm --filter @solidvs/server test:lab   # needs Docker: Keycloak + LDAP, real sign-in; remembered devices
 pnpm --filter @solidvs/server build && pnpm --filter @solidvs/server test:lab:data
                                            # needs Docker: the data layer on PostgreSQL; with
                                            # LAB_DATABASE_ENGINE=sqlserver LAB_MSSQL_ACCEPT_EULA=Y, on SQL Server
@@ -163,12 +165,23 @@ node lab/lab.ts up                        # identity + PostgreSQL; --engine sqls
 node lab/lab.ts database example dev      # database example_dev and its two logins
 node lab/lab.ts config example dev --out ../system-template/config.local.json
 node lab/lab.ts config example dev --migration --out ../system-template/config.migration.local.json
-node lab/lab.ts password ana              # sign in as ana (TI) or bruno (Vendas)
+node lab/lab.ts password ana              # sign in as ana (TI) or bruno (Vendas), realm internal
+node lab/lab.ts password carla            # sign in as carla (external), realm external
+node lab/lab.ts code carla                # carla's current second-factor code
 node lab/lab.ts down                      # stop and delete everything, secrets included
 ```
 
-The realm has two clients: `portal` (http://localhost:3999) and `example` (the system template, on
-http://localhost:5173).
+Realm `internal` (directory accounts, ADR-0009) has two clients: `portal` (http://localhost:3999)
+and `example` (the system template, on http://localhost:5173). Realm `external` (local accounts with
+the second factor, ADR-0018) has the client `partner-portal` (http://localhost:3998) and the person
+carla, with an authenticator app whose seed the laboratory generates. Its policy lives in realm
+attributes `solidvs.secondFactor.mode` and `solidvs.rememberedDevice.*`. Lab only: a code may be
+used twice within its 30 seconds (`otpPolicyCodeReusable`), so the tests need not wait; real realms
+keep the default (not reusable).
+
+Keycloak's port is 8081; `LAB_KEYCLOAK_PORT` changes it when another laboratory already uses it.
+The login theme and the extensions are copied into the work folder before Keycloak starts
+(`lab/keycloak.ts`), because some Docker setups (Colima) share only the home folder.
 
 **SQL Server on Apple silicon.** The image is amd64 only. Docker needs Rosetta emulation:
 install Rosetta 2 (`softwareupdate --install-rosetta`), then Colima with `vmType: vz`,
@@ -182,6 +195,17 @@ real login form and checks: directory password accepted only by the provider; de
 groups as claims; Sales refused without a session; refresh with the provider; provider session
 ended on logout; session ended at the next refresh after the person leaves IT in the directory.
 Passwords and the client secret are generated for each run and deleted with the containers.
+
+### Remembered devices `packages/server/test-lab/remembered-device.e2e.test.ts` (ADR-0018) plays
+the browser against realm `external`: the code is asked on a new device and the device remembered
+when the box stays ticked; a remembered device needs only the password and gets a new secret each
+time; nothing is remembered with the box unticked; a copied (previous) secret forgets every device
+of the person; level 2 (`acr_values=strong`) asks for the code even on a remembered device;
+an administrator forgets devices, and a password reset forgets them all; at most `maxDevices` are
+kept; the policy switches (`every-sign-in`, `off`, and the strictest value when unreadable).
+
+Not covered yet: the account console does not list remembered devices (they have no credential
+provider); the e-mail on a new device; reading the policy from the portal's definitions.
 
 Not covered by the laboratory, to verify against the real Active Directory: LDAPS with the
 domain's certificate, the `department` attribute and its real values, and **nested groups**

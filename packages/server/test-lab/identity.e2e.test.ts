@@ -17,6 +17,7 @@ import { Test } from '@nestjs/testing';
 import request from 'supertest';
 import { afterAll, beforeAll, describe, expect, it } from 'vitest';
 
+import { stageKeycloak } from '../../../lab/keycloak.ts';
 import { configurePlatformApp, CurrentService, platformConfigSchema, PlatformModule, ServiceRoute, type ServiceCaller } from '../src/index.js';
 
 /** A route for other systems (ADR-0014): client credentials tokens issued for the portal. */
@@ -30,7 +31,8 @@ class FeedController {
 }
 
 const LAB = join(dirname(fileURLToPath(import.meta.url)), '../../../lab/identity');
-const ISSUER = 'http://localhost:8081/realms/internal';
+// LAB_KEYCLOAK_PORT: another port when a development laboratory already uses 8081.
+const ISSUER = `http://localhost:${process.env.LAB_KEYCLOAK_PORT ?? '8081'}/realms/internal`;
 const PUBLIC_URL = 'http://localhost:3999';
 const secret = () => randomBytes(18).toString('base64url');
 const passwords = { ana: secret(), bruno: secret(), ldapAdmin: secret(), keycloakAdmin: secret(), client: secret(), exampleClient: secret() };
@@ -93,6 +95,7 @@ describe('ADR-0009 end to end: Keycloak federated to LDAP', () => {
     mkdirSync(join(workdir, 'realm'));
     writeFileSync(join(workdir, 'ldif', '50-directory.ldif'), render('directory.ldif.template', { ANA_PASSWORD: passwords.ana, BRUNO_PASSWORD: passwords.bruno }));
     writeFileSync(join(workdir, 'realm', 'internal-realm.json'), render('realm.json.template', { CLIENT_SECRET: passwords.client, EXAMPLE_CLIENT_SECRET: passwords.exampleClient, LDAP_ADMIN_PASSWORD: passwords.ldapAdmin }));
+    stageKeycloak(workdir);
     compose('up', '-d', '--wait-timeout', '180');
     await waitFor(`${ISSUER}/.well-known/openid-configuration`, 240_000);
 

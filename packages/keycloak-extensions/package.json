@@ -1,0 +1,10 @@
+{
+  "name": "@solidvs/keycloak-extensions",
+  "private": true,
+  "version": "0.1.0",
+  "description": "Keycloak extensions of the platform (ADR-0018): second factor on new devices only, remembered devices with rotation and reuse detection, forgotten when the password changes.",
+  "type": "module",
+  "scripts": {
+    "build": "node scripts/build.mjs"
+  }
+}

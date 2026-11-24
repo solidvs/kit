@@ -1,0 +1,2 @@
+io.github.solidvs.keycloak.device.SecondFactorConditionFactory
+io.github.solidvs.keycloak.device.RememberDeviceAuthenticatorFactory

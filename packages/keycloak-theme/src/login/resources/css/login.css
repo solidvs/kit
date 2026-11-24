@@ -325,3 +325,23 @@ form[data-step='password'] [data-account] {
   padding-block: 0;
   align-items: center;
 }
+
+/* Second factor page (ADR-0018). */
+.ui-login__hint {
+  margin: var(--ui-space-4) 0 0 calc(16px + var(--ui-space-6));
+  font: var(--ui-font-body-s);
+  color: var(--ui-text-muted);
+}
+.ui-login__notice {
+  margin: var(--ui-space-16) 0 0;
+  padding: var(--ui-space-8) var(--ui-space-12);
+  border-radius: var(--ui-radius-6);
+  background-color: var(--ui-bg-warning);
+  color: var(--ui-text-warning-strong);
+  font: var(--ui-font-body-s);
+}
+.ui-login__choices-group {
+  margin: 0;
+  padding: 0;
+  border: 0;
+}

@@ -6,7 +6,8 @@
  *   node lab/lab.ts database <system> <environment>         create a database and its two logins
  *   node lab/lab.ts config <system> <environment> --out <file> [--migration]
  *                                                           write a system's configuration file
- *   node lab/lab.ts password <ana|bruno>                    directory password of a test person
+ *   node lab/lab.ts password <ana|bruno|carla>              password of a test person
+ *   node lab/lab.ts code carla                              current second-factor code of carla (ADR-0018)
  *   node lab/lab.ts down                                    stop and delete everything
  *
  * SQL Server: set LAB_MSSQL_ACCEPT_EULA=Y to accept the Developer edition licence; on Apple
@@ -16,6 +17,7 @@ import { chmodSync, existsSync, mkdirSync, readFileSync, rmSync, writeFileSync }
 import { homedir } from 'node:os';
 import { join } from 'node:path';
 
+import { totp } from './keycloak.ts';
 import { compose, databaseKeys, databasePassword, labEnv, provision, secret, writeIdentityFiles, writeTls, type Credentials, type Engine } from './lib.ts';
 
 const WORKDIR = join(homedir(), '.cache', 'platform-kit-lab', 'dev');
@@ -23,8 +25,10 @@ const STATE = join(WORKDIR, 'state.json');
 
 type State = {
   engine: Engine;
-  passwords: { ana: string; bruno: string; ldapAdmin: string; keycloakAdmin: string; databaseAdmin: string };
-  clientSecrets: Record<'portal' | 'example', string>;
+  passwords: { ana: string; bruno: string; carla: string; ldapAdmin: string; keycloakAdmin: string; databaseAdmin: string };
+  /** Seed of carla's authenticator app in the `external` realm (ADR-0018). */
+  carlaOtpSecret: string;
+  clientSecrets: Record<'portal' | 'example' | 'partnerPortal', string>;
   ca: string;
   databases: Record<string, Credentials>;
 };
@@ -57,8 +61,9 @@ function up(args: string[]): void {
   chmodSync(WORKDIR, 0o700);
   const state: State = {
     engine,
-    passwords: { ana: secret(), bruno: secret(), ldapAdmin: secret(), keycloakAdmin: secret(), databaseAdmin: databasePassword() },
-    clientSecrets: { portal: secret(), example: secret() },
+    passwords: { ana: secret(), bruno: secret(), carla: secret(), ldapAdmin: secret(), keycloakAdmin: secret(), databaseAdmin: databasePassword() },
+    carlaOtpSecret: secret().slice(0, 20),
+    clientSecrets: { portal: secret(), example: secret(), partnerPortal: secret() },
     ca: '',
     databases: {},
   };
@@ -68,11 +73,14 @@ function up(args: string[]): void {
     CLIENT_SECRET: state.clientSecrets.portal,
     EXAMPLE_CLIENT_SECRET: state.clientSecrets.example,
     LDAP_ADMIN_PASSWORD: state.passwords.ldapAdmin,
+    CARLA_PASSWORD: state.passwords.carla,
+    CARLA_OTP_SECRET: state.carlaOtpSecret,
+    PARTNER_CLIENT_SECRET: state.clientSecrets.partnerPortal,
   });
   state.ca = writeTls(WORKDIR).ca;
   save(state);
   compose(envOf(state), '--profile', engine, 'up', '-d', '--wait', '--wait-timeout', '600');
-  console.log(`laboratory up: Keycloak on http://localhost:8081, ${engine} on localhost (TLS)`);
+  console.log(`laboratory up: Keycloak on http://localhost:8081 (realms internal and external), ${engine} on localhost (TLS)`);
 }
 
 function database([system, environment]: string[]): void {
@@ -92,7 +100,7 @@ function config(args: string[]): void {
   const credentials = state.databases[`${system.replaceAll('-', '_')}_${environment}`];
   if (!credentials) throw new Failure(`no database for ${system} ${environment}; run \`node lab/lab.ts database ${system} ${environment}\``);
   const migration = args.includes('--migration');
-  const clientSecret = state.clientSecrets[system as 'portal' | 'example'];
+  const clientSecret = system === 'portal' || system === 'example' ? state.clientSecrets[system] : undefined;
   if (!migration && !clientSecret) throw new Failure(`the laboratory realm has clients portal and example only, not ${system}`);
   // The migration step receives the migration login and nothing else (ADR-0016, item 6).
   const values = migration
@@ -112,8 +120,15 @@ function config(args: string[]): void {
 
 function password([person]: string[]): void {
   const state = load();
-  if (person !== 'ana' && person !== 'bruno') throw new Failure('people of the laboratory: ana (TI) and bruno (Vendas)');
+  if (person !== 'ana' && person !== 'bruno' && person !== 'carla') {
+    throw new Failure('people of the laboratory: ana (TI) and bruno (Vendas) in realm internal, carla (external) in realm external');
+  }
   console.log(state.passwords[person]);
+}
+
+async function code([person]: string[]): Promise<void> {
+  if (person !== 'carla') throw new Failure('only carla, of realm external, has an authenticator app in the laboratory');
+  console.log(await totp(load().carlaOtpSecret));
 }
 
 function down(): void {
@@ -131,8 +146,9 @@ try {
   else if (command === 'database') database(rest);
   else if (command === 'config') config(rest);
   else if (command === 'password') password(rest);
+  else if (command === 'code') await code(rest);
   else if (command === 'down') down();
-  else throw new Failure('usage: node lab/lab.ts <up | database | config | password | down>');
+  else throw new Failure('usage: node lab/lab.ts <up | database | config | password | code | down>');
 } catch (error) {
   if (error instanceof Failure) {
     console.error(error.message);

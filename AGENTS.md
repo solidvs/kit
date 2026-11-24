@@ -18,6 +18,11 @@ Every system of the organization depends on these packages. Read `README.md` fir
   `test:lab:data` on PostgreSQL locally; CI runs it on SQL Server too. Never add a setting that
   skips certificate checks, a connection string key, or a way for the application login to change
   `audit_event`. A new native type in the schema translation comes with its test.
+- **Keycloak extensions (ADR-0018) are security code.** A change to `packages/keycloak-extensions`
+  comes with its case in `test-lab/remembered-device.e2e.test.ts`. Keep the Keycloak version in its
+  `pom.xml` equal to the laboratory's image. Never store a device secret in clear, never let the
+  policy fall back to a weaker value than `every-sign-in` when it cannot be read, and never remember
+  a device unless a second factor succeeded in the same sign-in.
 - **Service routes are for systems.** `@ServiceRoute()` never accepts a session or a person's token;
   a change to `ServiceGuard` or `JwtServiceTokenVerifier` comes with its test, unit and laboratory.
 - **Definition kinds (ADR-0014).** Adding or changing a kind in `src/definitions/kinds.ts` changes

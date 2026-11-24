@@ -1,7 +1,8 @@
 name: ci
 
 # Every pull request and every change to main: dependency audit, type check, tests and build of
-# the packages, then the laboratory in Docker: identity (Keycloak federated to LDAP, ADR-0009) and
+# the packages, then the laboratory in Docker: identity (Keycloak federated to LDAP, ADR-0009, and
+# the second factor with remembered devices, ADR-0018) and
 # the data layer on every supported database engine (ADR-0016).
 
 on:
@@ -51,9 +52,11 @@ jobs:
           node-version-file: .node-version
       - run: corepack enable
       - run: pnpm install --frozen-lockfile
-      - name: Build the login theme the laboratory mounts
-        run: pnpm --filter @solidvs/keycloak-theme build
-      - name: Sign-in against Keycloak federated to LDAP
+      - name: Build the login theme and the Keycloak extensions the laboratory mounts
+        run: |
+          pnpm --filter @solidvs/keycloak-theme build
+          pnpm --filter @solidvs/keycloak-extensions build
+      - name: Sign-in against Keycloak federated to LDAP, and remembered devices (ADR-0018)
         run: pnpm --filter @solidvs/server test:lab
 
   # ADR-0016: an engine is supported only if it is tested. Provisioning procedure, migrations
