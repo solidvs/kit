@@ -3,7 +3,7 @@
   "version": "0.5.0",
   "description": "Server side of the standard stack: configuration, OIDC login, session, access rules, security headers, logging, health and the data layer (Prisma on PostgreSQL or SQL Server, audit trail) for NestJS systems.",
   "type": "module",
-  "license": "UNLICENSED",
+  "license": "Apache-2.0",
   "repository": {
     "type": "git",
     "url": "https://github.com/solidvs/kit.git",

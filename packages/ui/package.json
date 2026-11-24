@@ -3,7 +3,7 @@
   "version": "0.5.0",
   "description": "User interface of the standard stack: platform components on Base UI and dnd-kit, the platform tokens, fonts, icons, application shell, project page and board (ADR-0011).",
   "type": "module",
-  "license": "UNLICENSED",
+  "license": "Apache-2.0",
   "repository": {
     "type": "git",
     "url": "https://github.com/solidvs/kit.git",
