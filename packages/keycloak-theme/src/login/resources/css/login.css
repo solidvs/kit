@@ -1,0 +1,327 @@
+/* Layout of the platform login pages. Tokens, base, button and text field styles come from
+   @solidvs/ui (copied at build); this file only places them. */
+
+.ui-login-body {
+  background-color: var(--ui-surface-sunken);
+}
+
+.ui-login {
+  display: flex;
+  box-sizing: border-box;
+  min-height: 100vh;
+  align-items: center;
+  justify-content: center;
+  padding: var(--ui-space-48) var(--ui-space-16);
+}
+
+.ui-login__card {
+  box-sizing: border-box;
+  inline-size: 100%;
+  max-inline-size: 424px;
+  padding: var(--ui-space-32) var(--ui-space-40);
+  border-radius: var(--ui-radius-4);
+  background-color: var(--ui-surface);
+  box-shadow: var(--ui-shadow-raised);
+}
+
+.ui-login__brand {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--ui-space-8);
+  margin-block-end: var(--ui-space-24);
+  color: var(--ui-text);
+  font: var(--ui-font-heading-m);
+  text-align: center;
+}
+.ui-login__mark-tile {
+  fill: var(--ui-bg-brand-strong);
+}
+.ui-login__mark-letter {
+  fill: var(--ui-text-inverse);
+}
+.ui-login__logo {
+  display: block;
+  inline-size: 40px;
+  block-size: 40px;
+  border-radius: var(--ui-radius-8);
+  object-fit: contain;
+}
+
+.ui-login__card-header {
+  margin-block-end: var(--ui-space-24);
+  text-align: center;
+}
+.ui-login__title {
+  margin: 0;
+  font: var(--ui-font-heading-s);
+  color: var(--ui-text);
+}
+.ui-login__subtitle {
+  margin: var(--ui-space-4) 0 0;
+  color: var(--ui-text-muted);
+}
+
+/* Remembered account. */
+.ui-login__account {
+  display: flex;
+  align-items: center;
+  gap: var(--ui-space-16);
+  padding-block: var(--ui-space-8) var(--ui-space-16);
+  margin-block-end: var(--ui-space-8);
+  border-block-end: var(--ui-border-width) solid var(--ui-border);
+}
+.ui-login__avatar {
+  display: inline-flex;
+  flex-shrink: 0;
+  align-items: center;
+  justify-content: center;
+  inline-size: 64px;
+  block-size: 64px;
+  border-radius: var(--ui-radius-full);
+  color: var(--ui-text-inverse);
+  font: var(--ui-font-heading-l);
+}
+.ui-login__avatar--blue { background-color: var(--ui-bg-accent-blue-stronger); }
+.ui-login__avatar--teal { background-color: var(--ui-bg-accent-teal-stronger); }
+.ui-login__avatar--green { background-color: var(--ui-bg-accent-green-stronger); }
+.ui-login__avatar--purple { background-color: var(--ui-bg-accent-purple-stronger); }
+.ui-login__avatar--magenta { background-color: var(--ui-bg-accent-magenta-stronger); }
+.ui-login__avatar--orange { background-color: var(--ui-bg-accent-orange-stronger); }
+.ui-login__avatar--red { background-color: var(--ui-bg-accent-red-stronger); }
+.ui-login__account-text {
+  display: flex;
+  min-inline-size: 0;
+  flex-direction: column;
+}
+.ui-login__account-name {
+  overflow: hidden;
+  font: var(--ui-font-heading-xs);
+  color: var(--ui-text);
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.ui-login__account-hint {
+  color: var(--ui-text-muted);
+}
+.ui-login__choices {
+  display: flex;
+  flex-direction: column;
+  gap: var(--ui-space-8);
+}
+
+/* Steps of the remembered-account flow (set by account-chooser.js). */
+[hidden] {
+  display: none !important;
+}
+form[data-step='choose'] [data-fields],
+form[data-step='password'] [data-choices],
+form[data-step='password'] [data-username-field],
+form[data-step='form'] [data-choices],
+form[data-step='form'] [data-account] {
+  display: none;
+}
+form[data-step='password'] [data-account] {
+  border-block-end: 0;
+  margin-block-end: 0;
+}
+
+.ui-login__form {
+  display: flex;
+  flex-direction: column;
+  gap: var(--ui-space-16);
+}
+.ui-login__fields {
+  display: flex;
+  flex-direction: column;
+  gap: var(--ui-space-16);
+}
+.ui-login__field {
+  display: flex;
+  flex-direction: column;
+  gap: var(--ui-space-4);
+}
+.ui-login__label {
+  font: var(--ui-font-body-s);
+  font-weight: var(--ui-font-weight-semibold);
+  color: var(--ui-text-muted);
+}
+.ui-login__field .ui-textfield {
+  flex: none;
+  inline-size: 100%;
+}
+.ui-login__card .ui-login__reveal {
+  /* Square, as tall as the field's content box (36 px: 8 + 20 + 8) minus a 4 px gap on every side;
+     icon exactly centered. */
+  align-self: center;
+  inline-size: calc(var(--ui-space-8) * 2 + 20px - var(--ui-space-4) * 2);
+  block-size: calc(var(--ui-space-8) * 2 + 20px - var(--ui-space-4) * 2);
+  margin: var(--ui-space-4);
+  padding: 0;
+  align-items: center;
+  justify-content: center;
+}
+.ui-login__reveal .ui-button__icon,
+.ui-login__reveal svg {
+  display: block;
+  flex-shrink: 0;
+}
+.ui-login__reveal-hide,
+.ui-login__reveal[aria-pressed='true'] .ui-login__reveal-show {
+  display: none !important;
+}
+.ui-login__reveal[aria-pressed='true'] .ui-login__reveal-hide {
+  display: block !important;
+}
+
+.ui-login__error {
+  margin: 0;
+  font: var(--ui-font-body-s);
+  color: var(--ui-text-danger);
+}
+
+.ui-login__remember {
+  display: flex;
+  align-items: center;
+  gap: var(--ui-space-6);
+  color: var(--ui-text-muted);
+  cursor: pointer;
+}
+/* Own checkbox: 16 px box, thin 8 px check with room to the border. */
+.ui-login__remember input {
+  flex-shrink: 0;
+  inline-size: 16px;
+  block-size: 16px;
+  margin: 0;
+  border: var(--ui-border-width) solid var(--ui-border-input);
+  border-radius: var(--ui-radius-2);
+  background-color: var(--ui-bg-input);
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: 8px 8px;
+  appearance: none;
+  cursor: pointer;
+  transition: background-color var(--ui-duration-100) var(--ui-easing-out), border-color var(--ui-duration-100) var(--ui-easing-out);
+}
+.ui-login__remember input:hover {
+  background-color: var(--ui-bg-input-hover);
+}
+.ui-login__remember input:checked {
+  border-color: var(--ui-bg-brand-strong);
+  background-color: var(--ui-bg-brand-strong);
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 8 8'%3E%3Cpath d='M1 4.2 3.1 6.2 7 1.8' fill='none' stroke='white' stroke-width='1.25' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+}
+.ui-login__remember input:checked:hover {
+  background-color: var(--ui-bg-brand-strong-hover);
+}
+.ui-login__remember input:focus-visible {
+  outline: var(--ui-border-width-focus) solid var(--ui-border-focused);
+  outline-offset: var(--ui-space-2);
+}
+
+.ui-login__submit {
+  margin-block-start: var(--ui-space-8);
+}
+
+.ui-login__alert {
+  margin-block-end: var(--ui-space-16);
+  padding: var(--ui-space-8) var(--ui-space-12);
+  border-radius: var(--ui-radius-6);
+  font: var(--ui-font-body);
+}
+.ui-login__alert--error {
+  background-color: var(--ui-bg-danger);
+  color: var(--ui-text-danger-strong);
+}
+.ui-login__alert--warning {
+  background-color: var(--ui-bg-warning);
+  color: var(--ui-text-warning-strong);
+}
+.ui-login__alert--success {
+  background-color: var(--ui-bg-success);
+  color: var(--ui-text-success-strong);
+}
+.ui-login__alert--info {
+  background-color: var(--ui-bg-info);
+  color: var(--ui-text-info-strong);
+}
+
+.ui-login__info {
+  margin-block-start: var(--ui-space-16);
+  color: var(--ui-text-muted);
+}
+
+.ui-login__footer {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--ui-space-8);
+  margin-block-start: var(--ui-space-24);
+  padding-block-start: var(--ui-space-16);
+  border-block-start: var(--ui-border-width) solid var(--ui-border);
+  text-align: center;
+}
+.ui-login__footer-brand {
+  display: flex;
+  align-items: center;
+  gap: var(--ui-space-6);
+  color: var(--ui-text-muted);
+  font: var(--ui-font-heading-xs);
+}
+.ui-login__footer-tile {
+  fill: var(--ui-icon-muted);
+}
+.ui-login__footer-text,
+.ui-login__footer-links {
+  margin: 0;
+  color: var(--ui-text-muted);
+  font: var(--ui-font-body-s);
+}
+.ui-login__footer-links a {
+  color: var(--ui-link);
+  text-decoration: underline;
+}
+
+/* Inherited pages (errors, information, update password) use these generic classes. */
+.ui-login__input {
+  box-sizing: border-box;
+  inline-size: 100%;
+  padding: var(--ui-space-8) var(--ui-space-6);
+  border: var(--ui-border-width) solid var(--ui-border-input);
+  border-radius: var(--ui-radius-6);
+  background-color: var(--ui-bg-input);
+  color: var(--ui-text);
+  font: var(--ui-font-body);
+}
+.ui-login__input:focus {
+  border-color: var(--ui-border-focused);
+  box-shadow: inset 0 0 0 var(--ui-border-width) var(--ui-border-focused);
+  outline: none;
+}
+.ui-login__actions {
+  display: flex;
+  flex-direction: column;
+  gap: var(--ui-space-8);
+  margin-block-start: var(--ui-space-16);
+}
+.ui-login__card .ui-button {
+  justify-content: center;
+}
+.ui-login__card a {
+  color: var(--ui-link);
+}
+
+/* Login-page proportions: square-ish controls and a taller primary action. */
+.ui-login__card .ui-textfield,
+.ui-login__card .ui-button,
+.ui-login__input {
+  border-radius: var(--ui-radius-2);
+}
+.ui-login__card .ui-login__reveal {
+  border-radius: var(--ui-radius-2);
+}
+.ui-login__card .ui-button--primary.ui-button--fit {
+  block-size: 40px;
+  padding-block: 0;
+  align-items: center;
+}

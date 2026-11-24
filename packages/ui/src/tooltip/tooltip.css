@@ -1,0 +1,56 @@
+.ui-tooltip__positioner {
+  z-index: 9999;
+}
+
+.ui-tooltip {
+  box-sizing: border-box;
+  max-width: 240px;
+  padding: var(--ui-space-4) var(--ui-space-6);
+  border-radius: var(--ui-radius-4);
+  background-color: var(--ui-bg-neutral-strong);
+  color: var(--ui-text-inverse);
+  font: var(--ui-font-body-s);
+  overflow-wrap: break-word;
+  cursor: default;
+  transform-origin: var(--transform-origin);
+  transition:
+    opacity var(--ui-duration-150) var(--ui-easing-out),
+    transform var(--ui-duration-150) var(--ui-easing-out);
+}
+
+.ui-tooltip[data-starting-style],
+.ui-tooltip[data-ending-style] {
+  opacity: 0;
+}
+.ui-tooltip[data-side='bottom'][data-starting-style],
+.ui-tooltip[data-side='bottom'][data-ending-style] {
+  transform: translateY(calc(-1 * var(--ui-space-4)));
+}
+.ui-tooltip[data-side='top'][data-starting-style],
+.ui-tooltip[data-side='top'][data-ending-style] {
+  transform: translateY(var(--ui-space-4));
+}
+.ui-tooltip[data-side='right'][data-starting-style],
+.ui-tooltip[data-side='right'][data-ending-style] {
+  transform: translateX(calc(-1 * var(--ui-space-4)));
+}
+.ui-tooltip[data-side='left'][data-starting-style],
+.ui-tooltip[data-side='left'][data-ending-style] {
+  transform: translateX(var(--ui-space-4));
+}
+
+.ui-tooltip__shortcut {
+  display: flex;
+  gap: var(--ui-space-2);
+  padding: var(--ui-space-4) 0 var(--ui-space-2);
+}
+
+.ui-tooltip__key {
+  display: flex;
+  box-sizing: border-box;
+  align-items: center;
+  padding: var(--ui-space-2) var(--ui-space-6);
+  border: var(--ui-border-width) solid var(--ui-border-strong);
+  border-radius: var(--ui-radius-2);
+  font: var(--ui-font-body-s);
+}

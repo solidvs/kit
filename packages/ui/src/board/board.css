@@ -1,0 +1,9 @@
+/* The page gives the board its inline padding; the board adds only block padding. */
+.ui-board {
+  display: flex;
+  box-sizing: border-box;
+  align-items: flex-start;
+  column-gap: var(--ui-space-12);
+  overflow: auto;
+  padding: var(--ui-space-8) 0 var(--ui-space-24);
+}

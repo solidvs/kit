@@ -1,0 +1,14 @@
+packages:
+  - packages/*
+
+# Control 10 (vulnerability management): a release must be at least 7 days old before it can be
+# installed, so a compromised version has time to be detected and pulled.
+minimumReleaseAge: 10080
+
+# Dependencies may not run install scripts unless listed here with `true`. @swc/core ships its
+# native binary as an optional dependency and needs no script. The Prisma CLI (development and the
+# migration step only) fetches its schema engine on first use instead of at install (ADR-0016).
+allowBuilds:
+  '@prisma/engines': false
+  '@swc/core': false
+  prisma: false

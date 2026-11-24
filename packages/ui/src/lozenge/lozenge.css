@@ -1,0 +1,62 @@
+.ui-lozenge {
+  position: relative;
+  display: inline-flex;
+  box-sizing: border-box;
+  max-width: min(var(--ui-lozenge-max-width), 100%);
+  /* Measured: 20px tall including the 1px border; the 16px text line is centered inside. */
+  block-size: 20px;
+  padding: var(--ui-space-2) var(--ui-space-4);
+  align-items: center;
+  overflow: hidden;
+  border: var(--ui-border-width) solid var(--ui-border);
+  border-radius: var(--ui-radius-4);
+  background-color: var(--ui-bg-neutral);
+  color: var(--ui-text);
+  vertical-align: middle;
+}
+
+.ui-lozenge__content {
+  display: flex;
+  max-width: 100%;
+  align-items: center;
+  column-gap: var(--ui-space-4);
+}
+
+.ui-lozenge__text {
+  /* The text box is the lozenge width minus the inline padding. */
+  max-width: calc(var(--ui-lozenge-max-width) - 2 * var(--ui-space-4));
+  overflow: hidden;
+  font: var(--ui-font-body-s);
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.ui-lozenge--inprogress {
+  border-color: var(--ui-border-info-soft);
+  background-color: var(--ui-bg-info-light);
+  color: var(--ui-text-info-strong);
+}
+
+.ui-lozenge--moved {
+  border-color: var(--ui-border-warning-soft);
+  background-color: var(--ui-bg-warning-light);
+  color: var(--ui-text-warning-strong);
+}
+
+.ui-lozenge--new {
+  border-color: var(--ui-border-discovery-soft);
+  background-color: var(--ui-bg-discovery-light);
+  color: var(--ui-text-discovery-strong);
+}
+
+.ui-lozenge--removed {
+  border-color: var(--ui-border-danger-soft);
+  background-color: var(--ui-bg-danger-light);
+  color: var(--ui-text-danger-strong);
+}
+
+.ui-lozenge--success {
+  border-color: var(--ui-border-success-soft);
+  background-color: var(--ui-bg-success-light);
+  color: var(--ui-text-success-strong);
+}

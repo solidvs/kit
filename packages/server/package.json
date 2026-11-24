@@ -1,0 +1,81 @@
+{
+  "name": "@solidvs/server",
+  "version": "0.5.0",
+  "description": "Server side of the standard stack: configuration, OIDC login, session, access rules, security headers, logging, health and the data layer (Prisma on PostgreSQL or SQL Server, audit trail) for NestJS systems.",
+  "type": "module",
+  "license": "UNLICENSED",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/solidvs/kit.git",
+    "directory": "packages/server"
+  },
+  "publishConfig": {
+    "registry": "https://npm.pkg.github.com"
+  },
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "default": "./dist/index.js"
+    },
+    "./data": {
+      "types": "./dist/data/index.d.ts",
+      "default": "./dist/data/index.js"
+    },
+    "./testing": {
+      "types": "./dist/testing/index.d.ts",
+      "default": "./dist/testing/index.js"
+    }
+  },
+  "files": [
+    "dist",
+    "database"
+  ],
+  "scripts": {
+    "build": "tsc -p tsconfig.build.json",
+    "typecheck": "tsc -p tsconfig.json --noEmit",
+    "test": "vitest run",
+    "test:lab": "vitest run --config vitest.lab.config.ts test-lab/identity.e2e.test.ts",
+    "test:lab:data": "vitest run --config vitest.lab.config.ts test-lab/data.e2e.test.ts"
+  },
+  "dependencies": {
+    "@nestjs/throttler": "6.8.0",
+    "@prisma/adapter-mssql": "7.10.1",
+    "@prisma/adapter-pg": "7.10.1",
+    "@prisma/driver-adapter-utils": "7.10.1",
+    "@types/express": "5.0.6",
+    "cookie-parser": "1.4.7",
+    "helmet": "8.3.0",
+    "jose": "6.2.17",
+    "openid-client": "6.9.0",
+    "pino": "10.4.0",
+    "zod": "4.6.7"
+  },
+  "devDependencies": {
+    "@nestjs/common": "12.5.0",
+    "@nestjs/core": "12.5.0",
+    "@nestjs/platform-express": "12.5.0",
+    "@nestjs/testing": "12.5.0",
+    "@prisma/client": "7.10.1",
+    "@swc/core": "1.16.22",
+    "@types/cookie-parser": "1.4.10",
+    "@types/node": "24.19.2",
+    "@types/supertest": "7.2.1",
+    "prisma": "7.10.1",
+    "reflect-metadata": "0.2.2",
+    "rxjs": "7.8.2",
+    "supertest": "7.3.2",
+    "typescript": "5.9.3",
+    "unplugin-swc": "2.0.0",
+    "vitest": "5.1.0"
+  },
+  "peerDependencies": {
+    "@nestjs/common": "^12",
+    "@nestjs/core": "^12",
+    "@nestjs/platform-express": "^12",
+    "reflect-metadata": "^0.2",
+    "rxjs": "^7"
+  },
+  "bin": {
+    "solidvs-data": "./dist/cli/solidvs-data.js"
+  }
+}

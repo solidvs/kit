@@ -1,0 +1,20 @@
+.ui-platform-icon {
+  display: block;
+  flex-shrink: 0;
+}
+.ui-platform-icon__tile {
+  fill: var(--ui-bg-brand-strong);
+}
+.ui-platform-icon__letter {
+  fill: var(--ui-text-inverse);
+}
+
+.ui-platform-logo {
+  display: flex;
+  align-items: center;
+  gap: var(--ui-space-6);
+}
+.ui-platform-logo__name {
+  color: var(--ui-text);
+  font: var(--ui-font-heading-xs);
+}

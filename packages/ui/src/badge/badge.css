@@ -1,0 +1,32 @@
+.ui-badge {
+  display: inline-flex;
+  box-sizing: border-box;
+  /* Measured: never narrower than 24px, so one-digit counts keep the same width. */
+  min-inline-size: 24px;
+  padding: 0 var(--ui-space-4);
+  flex-shrink: 0;
+  justify-content: center;
+  border-radius: var(--ui-radius-2);
+  background-color: var(--ui-bg-neutral);
+  color: var(--ui-text);
+}
+
+.ui-badge__label {
+  font: var(--ui-font-body-s);
+}
+
+.ui-badge--primary {
+  background-color: var(--ui-bg-info-light);
+  color: var(--ui-text-info-strong);
+}
+
+.ui-badge--important,
+.ui-badge--removed {
+  background-color: var(--ui-bg-danger-light);
+  color: var(--ui-text-danger-strong);
+}
+
+.ui-badge--added {
+  background-color: var(--ui-bg-success-light);
+  color: var(--ui-text-success-strong);
+}

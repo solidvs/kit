@@ -1,0 +1,18 @@
+@solidvs/ui
+Platform user-interface package of the standard stack. All components, styles, tokens and the
+application shell are original platform code.
+
+Third-party components distributed with or required by this package:
+
+- Inter (variable font), Copyright 2016 The Inter Project Authors (https://github.com/rsms/inter).
+  SIL Open Font License, Version 1.1. Full text: licenses/OFL-Inter.txt. No Reserved Font Name.
+  Delivered through @fontsource-variable/inter (MIT packaging).
+- JetBrains Mono (variable font), Copyright 2020 The JetBrains Mono Project Authors
+  (https://github.com/JetBrains/JetBrainsMono). SIL Open Font License, Version 1.1.
+  Full text: licenses/OFL-JetBrainsMono.txt. No Reserved Font Name.
+  Delivered through @fontsource-variable/jetbrains-mono (MIT packaging).
+- @base-ui/react (MIT), @dnd-kit/core, @dnd-kit/sortable, @dnd-kit/utilities (MIT): installed as
+  dependencies with their own license files.
+
+Systems that bundle this package must ship a THIRD-PARTY-NOTICES file with the licenses of every
+bundled package and font (ADR-0011, item 8).

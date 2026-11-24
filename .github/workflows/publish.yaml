@@ -1,0 +1,41 @@
+name: publish
+
+# A tag `v<version>` publishes both packages to GitHub Packages, after the same checks as `ci`.
+# Versions in packages/*/package.json must match the tag.
+
+on:
+  push:
+    tags: ['v*']
+
+permissions:
+  contents: read
+  packages: write
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+        with:
+          node-version-file: .node-version
+          registry-url: https://npm.pkg.github.com
+          scope: '@solidvs'
+      - run: corepack enable
+      - run: pnpm install --frozen-lockfile
+      - name: Tag matches package versions
+        run: |
+          for pkg in packages/*/package.json; do
+            # Private packages (the screenshot gallery) are never published.
+            [ "$(node -p "Boolean(require('./$pkg').private)")" = "true" ] && continue
+            version="v$(node -p "require('./$pkg').version")"
+            [ "$version" = "$GITHUB_REF_NAME" ] || { echo "$pkg is $version, tag is $GITHUB_REF_NAME"; exit 1; }
+          done
+      - run: pnpm audit --prod --audit-level high
+      - run: pnpm typecheck && pnpm test && pnpm build
+      - name: Publish
+        run: pnpm -r publish --no-git-checks --access restricted
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}

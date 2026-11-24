@@ -1,0 +1,62 @@
+/* Columns use the project's accent background one step stronger than the page (gray: light on faint). */
+.ui-board-column {
+  display: flex;
+  box-sizing: border-box;
+  inline-size: 280px;
+  flex-shrink: 0;
+  flex-direction: column;
+  row-gap: var(--ui-space-6);
+  padding: var(--ui-space-6);
+  border-radius: var(--ui-radius-12);
+  background-color: var(--ui-bg-accent-gray-light);
+}
+.ui-board-column--over {
+  background-color: var(--ui-bg-accent-gray-light-hover);
+}
+
+.ui-board-column__header {
+  display: flex;
+  min-block-size: 32px;
+  align-items: center;
+  justify-content: space-between;
+  padding-inline-start: var(--ui-space-6);
+}
+
+.ui-board-column__title {
+  display: flex;
+  align-items: center;
+  column-gap: var(--ui-space-8);
+}
+
+.ui-board-column__cards {
+  display: flex;
+  flex-direction: column;
+  row-gap: var(--ui-space-6);
+}
+
+.ui-board-column__add {
+  display: flex;
+  box-sizing: border-box;
+  inline-size: 100%;
+  block-size: 24px;
+  align-items: center;
+  justify-content: center;
+  margin: 0;
+  padding: 0;
+  border: var(--ui-border-width) dashed var(--ui-border);
+  border-radius: var(--ui-radius-8);
+  background-color: transparent;
+  color: var(--ui-text-muted);
+  cursor: pointer;
+  transition: background-color var(--ui-duration-150) var(--ui-easing-out);
+}
+.ui-board-column__add:hover {
+  background-color: var(--ui-bg-neutral-quiet-hover);
+}
+.ui-board-column__add:active {
+  background-color: var(--ui-bg-neutral-quiet-active);
+}
+.ui-board-column__add:focus-visible {
+  outline: var(--ui-border-width-focus) solid var(--ui-border-focused);
+  outline-offset: var(--ui-space-2);
+}

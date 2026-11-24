@@ -1,0 +1,32 @@
+{
+  "name": "@solidvs/ui-gallery",
+  "private": true,
+  "version": "0.0.0",
+  "description": "Every export of @solidvs/ui in every state, light and dark. Its screenshots are the visual reference the UI package must keep matching (ADR-0011).",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview --port 5180 --strictPort",
+    "capture": "node scripts/capture.ts",
+    "compare": "node scripts/compare.ts",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@solidvs/ui": "workspace:*",
+    "react": "18.3.1",
+    "react-dom": "18.3.1"
+  },
+  "devDependencies": {
+    "@types/node": "24.19.2",
+    "@types/pngjs": "6.0.5",
+    "@types/react": "18.3.31",
+    "@types/react-dom": "18.3.7",
+    "@vitejs/plugin-react": "6.3.0",
+    "pixelmatch": "8.0.0",
+    "playwright-core": "1.65.1",
+    "pngjs": "7.0.0",
+    "typescript": "5.9.3",
+    "vite": "8.3.8"
+  }
+}

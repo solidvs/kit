@@ -1,0 +1,85 @@
+name: ci
+
+# Every pull request and every change to main: dependency audit, type check, tests and build of
+# the packages, then the laboratory in Docker: identity (Keycloak federated to LDAP, ADR-0009) and
+# the data layer on every supported database engine (ADR-0016).
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+        with:
+          node-version-file: .node-version
+      - name: pnpm at the version in package.json
+        run: corepack enable
+      - run: pnpm install --frozen-lockfile
+      # ADR-0011, item 10: the interface is platform code; no third-party design-system package,
+      # client or name may come back through code, styles or the lockfile.
+      - name: No third-party design-system residue
+        run: |
+          if git grep -n -i -E 'atlaskit|atlassian|@compiled/|statsig|--ds-' -- . ':!.github/workflows/ci.yaml'; then
+            echo "Third-party design-system residue found (ADR-0011)"; exit 1
+          fi
+      - name: Dependency audit (runtime dependencies)
+        run: pnpm audit --prod --audit-level high
+      - run: pnpm typecheck
+      - run: pnpm test
+      - run: pnpm build
+
+  identity-lab:
+    runs-on: ubuntu-latest
+    needs: check
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+        with:
+          node-version-file: .node-version
+      - run: corepack enable
+      - run: pnpm install --frozen-lockfile
+      - name: Build the login theme the laboratory mounts
+        run: pnpm --filter @solidvs/keycloak-theme build
+      - name: Sign-in against Keycloak federated to LDAP
+        run: pnpm --filter @solidvs/server test:lab
+
+  # ADR-0016: an engine is supported only if it is tested. Provisioning procedure, migrations
+  # written by solidvs-data and applied with the migration login, insert-only audit, no DDL for the
+  # application login and verified TLS, on each engine.
+  data-lab:
+    runs-on: ubuntu-latest
+    needs: check
+    strategy:
+      fail-fast: false
+      matrix:
+        engine: [postgresql, sqlserver]
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+        with:
+          node-version-file: .node-version
+      - run: corepack enable
+      - run: pnpm install --frozen-lockfile
+      - name: Build the server package (the migration command runs from dist)
+        run: pnpm --filter @solidvs/server build
+      - name: Data layer against ${{ matrix.engine }}
+        env:
+          LAB_DATABASE_ENGINE: ${{ matrix.engine }}
+          # SQL Server Developer edition, for tests only: the repository owner accepts its licence.
+          LAB_MSSQL_ACCEPT_EULA: 'Y'
+        run: pnpm --filter @solidvs/server test:lab:data

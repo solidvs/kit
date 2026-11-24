@@ -1,0 +1,58 @@
+{
+  "name": "@solidvs/ui",
+  "version": "0.5.0",
+  "description": "User interface of the standard stack: platform components on Base UI and dnd-kit, the platform tokens, fonts, icons, application shell, project page and board (ADR-0011).",
+  "type": "module",
+  "license": "UNLICENSED",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/solidvs/kit.git",
+    "directory": "packages/ui"
+  },
+  "publishConfig": {
+    "registry": "https://npm.pkg.github.com"
+  },
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "default": "./dist/index.js"
+    }
+  },
+  "files": [
+    "dist",
+    "NOTICE",
+    "licenses"
+  ],
+  "sideEffects": [
+    "**/*.css"
+  ],
+  "scripts": {
+    "build": "rm -rf dist && babel src --out-dir dist --extensions .ts,.tsx --ignore \"src/**/*.d.ts\" --copy-files --no-copy-ignored && tsc -p tsconfig.build.json",
+    "typecheck": "tsc -p tsconfig.json --noEmit",
+    "test": "vitest run --passWithNoTests"
+  },
+  "dependencies": {
+    "@base-ui/react": "1.9.0",
+    "@dnd-kit/core": "6.3.1",
+    "@dnd-kit/sortable": "10.0.0",
+    "@dnd-kit/utilities": "3.2.2",
+    "@fontsource-variable/inter": "5.3.0",
+    "@fontsource-variable/jetbrains-mono": "5.3.0"
+  },
+  "peerDependencies": {
+    "react": "^18.3.1 || ^19.0.0",
+    "react-dom": "^18.3.1 || ^19.0.0"
+  },
+  "devDependencies": {
+    "@babel/cli": "7.29.7",
+    "@babel/core": "7.29.13",
+    "@babel/preset-react": "7.29.7",
+    "@babel/preset-typescript": "7.29.7",
+    "@types/react": "18.3.31",
+    "@types/react-dom": "18.3.7",
+    "react": "18.3.1",
+    "react-dom": "18.3.1",
+    "typescript": "5.9.3",
+    "vitest": "5.1.0"
+  }
+}

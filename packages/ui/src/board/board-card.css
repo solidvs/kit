@@ -1,0 +1,81 @@
+.ui-board-card {
+  position: relative;
+  box-sizing: border-box;
+  padding: var(--ui-space-12) var(--ui-space-12) var(--ui-space-8);
+  border-radius: var(--ui-radius-8);
+  background-color: var(--ui-surface-raised);
+  box-shadow: var(--ui-shadow-raised);
+  cursor: grab;
+}
+.ui-board-card:hover {
+  background-color: var(--ui-surface-raised-hover);
+}
+.ui-board-card:focus-visible {
+  outline: var(--ui-border-width-focus) solid var(--ui-border-focused);
+  outline-offset: var(--ui-space-2);
+}
+
+/* The dragged card stays in its place, faded, with the hover background it had when picked up. */
+.ui-board-card--dragging {
+  background-color: var(--ui-surface-raised-hover);
+  opacity: var(--ui-opacity-disabled);
+}
+
+.ui-board-card--preview {
+  cursor: grabbing;
+}
+
+.ui-board-card__content {
+  display: flex;
+  flex-direction: column;
+  row-gap: var(--ui-space-8);
+}
+
+.ui-board-card__footer {
+  display: flex;
+  min-block-size: 24px;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.ui-board-card__key {
+  display: flex;
+  align-items: center;
+  column-gap: var(--ui-space-4);
+}
+
+.ui-board-card__meta {
+  display: flex;
+  align-items: center;
+  column-gap: var(--ui-space-8);
+}
+
+/*
+ * Drop indicator: a line in the middle of the gap above or below the card, starting at a ring
+ * centered on the card's left edge.
+ */
+.ui-board-card__drop-indicator {
+  position: absolute;
+  z-index: 1;
+  inset-inline: var(--ui-space-4) 0;
+  block-size: var(--ui-border-width-selected);
+  background-color: var(--ui-border-selected);
+  pointer-events: none;
+}
+.ui-board-card__drop-indicator--top {
+  inset-block-start: calc(-1 * (var(--ui-space-6) / 2 + var(--ui-border-width-selected)));
+}
+.ui-board-card__drop-indicator--bottom {
+  inset-block-end: calc(-1 * (var(--ui-space-6) / 2 + var(--ui-border-width-selected)));
+}
+.ui-board-card__drop-indicator::before {
+  content: '';
+  position: absolute;
+  box-sizing: border-box;
+  inline-size: 8px;
+  block-size: 8px;
+  inset-inline-start: -8px;
+  inset-block-start: calc((var(--ui-border-width-selected) - 8px) / 2);
+  border: var(--ui-border-width-selected) solid var(--ui-border-selected);
+  border-radius: var(--ui-radius-full);
+}

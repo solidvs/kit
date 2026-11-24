@@ -1,0 +1,17 @@
+.ui-icon {
+  display: inline-flex;
+  flex-shrink: 0;
+  inline-size: var(--ui-icon-size);
+  block-size: var(--ui-icon-size);
+  line-height: 0;
+  pointer-events: none;
+}
+
+.ui-icon > svg {
+  inline-size: 100%;
+  block-size: 100%;
+  overflow: hidden;
+  fill: none;
+  vertical-align: bottom;
+  pointer-events: none;
+}

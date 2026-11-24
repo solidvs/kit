@@ -1,0 +1,47 @@
+.ui-avatar-group {
+  display: flex;
+  isolation: isolate;
+  margin: 0 var(--ui-space-4) 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.ui-avatar-group__item {
+  position: relative;
+  display: flex;
+  margin: 0;
+  padding: 0;
+}
+
+/* Stack: each avatar overlaps the next by 4px; earlier avatars sit on top. */
+.ui-avatar-group--stack .ui-avatar-group__item {
+  margin-inline-end: calc(-1 * var(--ui-space-4));
+}
+
+.ui-avatar-group--grid {
+  flex-wrap: wrap;
+  gap: var(--ui-space-4);
+  margin: 0;
+}
+
+.ui-avatar-group__more {
+  display: inline-block;
+  line-height: 0;
+}
+
+.ui-avatar-group__more-frame {
+  display: flex;
+  box-sizing: border-box;
+  inline-size: var(--ui-avatar-size);
+  block-size: var(--ui-avatar-size);
+  margin: var(--ui-space-2);
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  border-radius: var(--ui-radius-full);
+  background-color: var(--ui-bg-neutral);
+  box-shadow: 0 0 0 var(--ui-border-width-focus) var(--ui-surface);
+  color: var(--ui-text);
+  font: var(--ui-font-body-s);
+  font-weight: var(--ui-font-weight-medium);
+}

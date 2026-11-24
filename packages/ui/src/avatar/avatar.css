@@ -1,0 +1,82 @@
+.ui-avatar {
+  position: relative;
+  display: inline-block;
+  line-height: 0;
+  vertical-align: middle;
+}
+
+.ui-avatar__frame {
+  position: relative;
+  display: flex;
+  box-sizing: content-box;
+  inline-size: var(--ui-avatar-size);
+  block-size: var(--ui-avatar-size);
+  /* The ring is drawn by the box-shadow inside this 2px margin. */
+  margin: var(--ui-space-2);
+  padding: 0;
+  flex-direction: column;
+  justify-content: center;
+  overflow: hidden;
+  border: 0;
+  border-radius: var(--ui-radius-full);
+  background-color: var(--ui-surface);
+  box-shadow: 0 0 0 var(--ui-border-width-focus) var(--ui-surface);
+  color: inherit;
+  font: inherit;
+  text-decoration: none;
+}
+
+.ui-avatar--square .ui-avatar__frame {
+  border-radius: 25%;
+}
+
+/* Overlay that darkens an interactive avatar on hover and press. */
+.ui-avatar__frame::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  background-color: transparent;
+  pointer-events: none;
+  transition: background-color var(--ui-duration-150) var(--ui-easing-out);
+}
+
+button.ui-avatar__frame,
+a.ui-avatar__frame {
+  cursor: pointer;
+}
+
+button.ui-avatar__frame:hover::after,
+a.ui-avatar__frame:hover::after {
+  background-color: var(--ui-interaction-hover);
+}
+
+button.ui-avatar__frame:active::after,
+a.ui-avatar__frame:active::after {
+  background-color: var(--ui-interaction-active);
+}
+
+button.ui-avatar__frame:focus-visible,
+a.ui-avatar__frame:focus-visible {
+  outline: var(--ui-border-width-focus) solid var(--ui-border-focused);
+  outline-offset: var(--ui-border-width-focus);
+}
+
+.ui-avatar__fallback {
+  display: flex;
+  flex-grow: 1;
+  background-color: var(--ui-bg-accent-gray-light);
+  color: var(--ui-icon-muted);
+}
+
+.ui-avatar__image {
+  inline-size: 100%;
+  block-size: 100%;
+  object-fit: cover;
+  transition: opacity var(--ui-duration-200) var(--ui-easing-out);
+}
+
+.ui-avatar__image[data-starting-style],
+.ui-avatar__image[data-ending-style] {
+  opacity: 0;
+}

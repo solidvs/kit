@@ -1,0 +1,77 @@
+/* The page sits on the project's accent background (gray: the faintest step). */
+.ui-project-page {
+  box-sizing: border-box;
+  min-height: 100%;
+  background-color: var(--ui-bg-accent-gray-faint);
+}
+
+.ui-project-page__header {
+  display: flex;
+  box-sizing: border-box;
+  flex-direction: column;
+  row-gap: var(--ui-space-8);
+  padding: var(--ui-space-16) var(--ui-space-24) 0;
+}
+
+.ui-project-page__title-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.ui-project-page__title {
+  display: flex;
+  align-items: center;
+  column-gap: var(--ui-space-8);
+}
+
+.ui-project-page__actions {
+  display: flex;
+  align-items: start;
+  column-gap: var(--ui-space-4);
+}
+
+.ui-project-page__body {
+  box-sizing: border-box;
+  padding: var(--ui-space-8) var(--ui-space-24) 0;
+}
+
+.ui-project-page__tab {
+  display: flex;
+  align-items: center;
+  column-gap: var(--ui-space-4);
+}
+
+.ui-project-page__view {
+  display: flex;
+  box-sizing: border-box;
+  inline-size: 100%;
+  flex-direction: column;
+  row-gap: var(--ui-space-8);
+}
+
+.ui-project-page__toolbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding-block-start: var(--ui-space-8);
+}
+
+.ui-project-page__toolbar-start {
+  display: flex;
+  align-items: center;
+  column-gap: var(--ui-space-8);
+}
+
+.ui-project-page__search {
+  inline-size: 180px;
+}
+
+/* A 20px row with the 16px icon 1px from its top, as measured in 0.1.x. */
+.ui-project-page__search-icon {
+  display: flex;
+  box-sizing: border-box;
+  block-size: 20px;
+  padding-block-start: 1px;
+  padding-inline-start: var(--ui-space-6);
+}

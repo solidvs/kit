@@ -1,0 +1,32 @@
+dn: ou=people,dc=example,dc=test
+objectClass: organizationalUnit
+ou: people
+
+dn: ou=groups,dc=example,dc=test
+objectClass: organizationalUnit
+ou: groups
+
+dn: uid=ana,ou=people,dc=example,dc=test
+objectClass: inetOrgPerson
+uid: ana
+cn: Ana Souza
+givenName: Ana
+sn: Souza
+mail: ana@example.test
+departmentNumber: TI
+userPassword: {{ANA_PASSWORD}}
+
+dn: uid=bruno,ou=people,dc=example,dc=test
+objectClass: inetOrgPerson
+uid: bruno
+cn: Bruno Lima
+givenName: Bruno
+sn: Lima
+mail: bruno@example.test
+departmentNumber: Vendas
+userPassword: {{BRUNO_PASSWORD}}
+
+dn: cn=GRP-Portal-Admins,ou=groups,dc=example,dc=test
+objectClass: groupOfNames
+cn: GRP-Portal-Admins
+member: uid=ana,ou=people,dc=example,dc=test

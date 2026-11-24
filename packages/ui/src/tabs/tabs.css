@@ -1,0 +1,88 @@
+.ui-tabs {
+  display: flex;
+  max-width: 100%;
+  flex: 1 1 100%;
+  flex-direction: column;
+}
+
+/* The list starts 8px to the left, so the first label lines up with the content; the base line does not. */
+.ui-tabs__list {
+  position: relative;
+  display: flex;
+  margin-inline-start: calc(-1 * var(--ui-space-8));
+  font-weight: var(--ui-font-weight-medium);
+}
+.ui-tabs__list::before {
+  content: '';
+  position: absolute;
+  inset-block-end: 0;
+  inset-inline: var(--ui-space-8) 0;
+  block-size: var(--ui-border-width);
+  background-color: var(--ui-border);
+}
+
+.ui-tabs__tab {
+  position: relative;
+  overflow: hidden;
+  margin: 0;
+  padding: var(--ui-space-6) var(--ui-space-8);
+  border: 0;
+  border-radius: var(--ui-radius-6);
+  background-color: transparent;
+  color: var(--ui-text-muted);
+  font: inherit;
+  text-align: start;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  cursor: pointer;
+  transition: color var(--ui-duration-150) var(--ui-easing-out);
+}
+
+/* Underline: neutral on hover, selected color on the selected tab. */
+.ui-tabs__tab::after {
+  content: '';
+  position: absolute;
+  inset-block-end: 0;
+  inset-inline: var(--ui-space-8);
+  border-block-end: var(--ui-border-width-selected) solid transparent;
+}
+.ui-tabs__tab:hover::after {
+  border-block-end-color: var(--ui-border);
+}
+.ui-tabs__tab[data-active] {
+  color: var(--ui-text-selected);
+}
+.ui-tabs__tab[data-active]::after {
+  border-block-end-color: var(--ui-border-selected);
+}
+
+.ui-tabs__tab:focus-visible {
+  outline: var(--ui-border-width-focus) solid var(--ui-border-focused);
+  outline-offset: calc(-1 * var(--ui-border-width-focus));
+}
+
+.ui-tabs__tab[data-disabled] {
+  color: var(--ui-text-disabled);
+  cursor: not-allowed;
+}
+.ui-tabs__tab[data-disabled]::after {
+  border-block-end-color: transparent;
+}
+
+.ui-tabs__tab-label {
+  display: block;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.ui-tabs__panel {
+  display: flex;
+  flex-grow: 1;
+}
+.ui-tabs__panel[hidden] {
+  display: none;
+}
+.ui-tabs__panel:focus-visible {
+  outline: var(--ui-border-width-focus) solid var(--ui-border-focused);
+  outline-offset: calc(-1 * var(--ui-border-width-focus));
+}
