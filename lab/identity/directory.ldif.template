@@ -6,15 +6,15 @@ dn: ou=groups,dc=example,dc=test
 objectClass: organizationalUnit
 ou: groups
 
-dn: uid=ana,ou=people,dc=example,dc=test
+dn: uid=operator,ou=people,dc=example,dc=test
 objectClass: inetOrgPerson
-uid: ana
-cn: Ana Souza
-givenName: Ana
-sn: Souza
-mail: ana@example.test
+uid: operator
+cn: Operador de TI
+givenName: Operador
+sn: de TI
+mail: operator@example.test
 departmentNumber: TI
-userPassword: {{ANA_PASSWORD}}
+userPassword: {{OPERATOR_PASSWORD}}
 
 dn: uid=bruno,ou=people,dc=example,dc=test
 objectClass: inetOrgPerson
@@ -29,4 +29,4 @@ userPassword: {{BRUNO_PASSWORD}}
 dn: cn=GRP-Portal-Admins,ou=groups,dc=example,dc=test
 objectClass: groupOfNames
 cn: GRP-Portal-Admins
-member: uid=ana,ou=people,dc=example,dc=test
+member: uid=operator,ou=people,dc=example,dc=test

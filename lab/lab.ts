@@ -6,7 +6,7 @@
  *   node lab/lab.ts database <system> <environment>         create a database and its two logins
  *   node lab/lab.ts config <system> <environment> --out <file> [--migration]
  *                                                           write a system's configuration file
- *   node lab/lab.ts password <ana|bruno|carla>              password of a test person
+ *   node lab/lab.ts password <operator|bruno|carla>         password of a test person
  *   node lab/lab.ts code carla                              current second-factor code of carla (ADR-0018)
  *   node lab/lab.ts down                                    stop and delete everything
  *
@@ -25,7 +25,7 @@ const STATE = join(WORKDIR, 'state.json');
 
 type State = {
   engine: Engine;
-  passwords: { ana: string; bruno: string; carla: string; ldapAdmin: string; keycloakAdmin: string; databaseAdmin: string };
+  passwords: { operator: string; bruno: string; carla: string; ldapAdmin: string; keycloakAdmin: string; databaseAdmin: string };
   /** Seed of carla's authenticator app in the `external` realm (ADR-0018). */
   carlaOtpSecret: string;
   clientSecrets: Record<'portal' | 'example' | 'partnerPortal', string>;
@@ -61,14 +61,14 @@ function up(args: string[]): void {
   chmodSync(WORKDIR, 0o700);
   const state: State = {
     engine,
-    passwords: { ana: secret(), bruno: secret(), carla: secret(), ldapAdmin: secret(), keycloakAdmin: secret(), databaseAdmin: databasePassword() },
+    passwords: { operator: secret(), bruno: secret(), carla: secret(), ldapAdmin: secret(), keycloakAdmin: secret(), databaseAdmin: databasePassword() },
     carlaOtpSecret: secret().slice(0, 20),
     clientSecrets: { portal: secret(), example: secret(), partnerPortal: secret() },
     ca: '',
     databases: {},
   };
   writeIdentityFiles(WORKDIR, {
-    ANA_PASSWORD: state.passwords.ana,
+    OPERATOR_PASSWORD: state.passwords.operator,
     BRUNO_PASSWORD: state.passwords.bruno,
     CLIENT_SECRET: state.clientSecrets.portal,
     EXAMPLE_CLIENT_SECRET: state.clientSecrets.example,
@@ -120,8 +120,8 @@ function config(args: string[]): void {
 
 function password([person]: string[]): void {
   const state = load();
-  if (person !== 'ana' && person !== 'bruno' && person !== 'carla') {
-    throw new Failure('people of the laboratory: ana (TI) and bruno (Vendas) in realm internal, carla (external) in realm external');
+  if (person !== 'operator' && person !== 'bruno' && person !== 'carla') {
+    throw new Failure('people of the laboratory: operator (TI) and bruno (Vendas) in realm internal, carla (external) in realm external');
   }
   console.log(state.passwords[person]);
 }
