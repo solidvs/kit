@@ -165,7 +165,7 @@ node lab/lab.ts up                        # identity + PostgreSQL; --engine sqls
 node lab/lab.ts database example dev      # database example_dev and its two logins
 node lab/lab.ts config example dev --out ../system-template/config.local.json
 node lab/lab.ts config example dev --migration --out ../system-template/config.migration.local.json
-node lab/lab.ts password ana              # sign in as ana (TI) or bruno (Vendas), realm internal
+node lab/lab.ts password operator              # sign in as operator (TI) or bruno (Vendas), realm internal
 node lab/lab.ts password carla            # sign in as carla (external), realm external
 node lab/lab.ts code carla                # carla's current second-factor code
 node lab/lab.ts down                      # stop and delete everything, secrets included

@@ -35,7 +35,7 @@ const LAB = join(dirname(fileURLToPath(import.meta.url)), '../../../lab/identity
 const ISSUER = `http://localhost:${process.env.LAB_KEYCLOAK_PORT ?? '8081'}/realms/internal`;
 const PUBLIC_URL = 'http://localhost:3999';
 const secret = () => randomBytes(18).toString('base64url');
-const passwords = { ana: secret(), bruno: secret(), ldapAdmin: secret(), keycloakAdmin: secret(), client: secret(), exampleClient: secret() };
+const passwords = { operator: secret(), bruno: secret(), ldapAdmin: secret(), keycloakAdmin: secret(), client: secret(), exampleClient: secret() };
 // Under the home folder: the Docker VM (Colima) shares only the home folder with the host.
 mkdirSync(join(homedir(), '.cache', 'platform-kit-lab'), { recursive: true });
 const workdir = mkdtempSync(join(homedir(), '.cache', 'platform-kit-lab', 'identity-'));
@@ -93,7 +93,7 @@ describe('ADR-0009 end to end: Keycloak federated to LDAP', () => {
   beforeAll(async () => {
     mkdirSync(join(workdir, 'ldif'));
     mkdirSync(join(workdir, 'realm'));
-    writeFileSync(join(workdir, 'ldif', '50-directory.ldif'), render('directory.ldif.template', { ANA_PASSWORD: passwords.ana, BRUNO_PASSWORD: passwords.bruno }));
+    writeFileSync(join(workdir, 'ldif', '50-directory.ldif'), render('directory.ldif.template', { OPERATOR_PASSWORD: passwords.operator, BRUNO_PASSWORD: passwords.bruno }));
     writeFileSync(join(workdir, 'realm', 'internal-realm.json'), render('realm.json.template', { CLIENT_SECRET: passwords.client, EXAMPLE_CLIENT_SECRET: passwords.exampleClient, LDAP_ADMIN_PASSWORD: passwords.ldapAdmin }));
     stageKeycloak(workdir);
     compose('up', '-d', '--wait-timeout', '180');
@@ -137,11 +137,11 @@ describe('ADR-0009 end to end: Keycloak federated to LDAP', () => {
   }
 
   it('signs in a person of the IT department with the directory password; department and group arrive as claims', async () => {
-    const { callback, session } = await signIn('ana', passwords.ana);
+    const { callback, session } = await signIn('operator', passwords.operator);
     expect(callback?.headers.location).toBe('/projetos');
     const me = await request(app.getHttpServer()).get('/api/auth/me').set('Cookie', session!).expect(200);
     expect(me.body).toMatchObject({
-      user: { username: 'ana', name: 'Ana Souza', email: 'ana@example.test', department: 'TI' },
+      user: { username: 'operator', name: 'Operador de TI', email: 'operator@example.test', department: 'TI' },
       access: { by: 'department', value: 'TI' },
       roles: ['admin'],
     });
@@ -154,13 +154,13 @@ describe('ADR-0009 end to end: Keycloak federated to LDAP', () => {
   });
 
   it('keeps a wrong password at the provider: the system never sees it', async () => {
-    const { keycloakStatus, callback } = await signIn('ana', 'wrong-password');
+    const { keycloakStatus, callback } = await signIn('operator', 'wrong-password');
     expect(keycloakStatus).toBe(200);
     expect(callback).toBeUndefined();
   });
 
   it('refreshes with the provider and ends the provider session on logout', async () => {
-    const { session } = await signIn('ana', passwords.ana);
+    const { session } = await signIn('operator', passwords.operator);
     // Access tokens live 60 s in the lab and the session refreshes 60 s before expiry: every request refreshes.
     await request(app.getHttpServer()).get('/api/auth/me').set('Cookie', session!).expect(200);
     const me = await request(app.getHttpServer()).get('/api/auth/me').set('Cookie', session!).expect(200);
@@ -178,12 +178,12 @@ describe('ADR-0009 end to end: Keycloak federated to LDAP', () => {
   });
 
   it('ends the session at the next refresh when the person leaves the IT department in the directory', async () => {
-    const { session } = await signIn('ana', passwords.ana);
+    const { session } = await signIn('operator', passwords.operator);
     await request(app.getHttpServer()).get('/api/auth/me').set('Cookie', session!).expect(200);
     execFileSync(
       'docker',
       ['compose', '-f', join(LAB, 'compose.yaml'), 'exec', '-T', 'directory', 'ldapmodify', '-x', '-H', 'ldap://localhost', '-D', 'cn=admin,dc=example,dc=test', '-w', passwords.ldapAdmin],
-      { env, input: 'dn: uid=ana,ou=people,dc=example,dc=test\nchangetype: modify\nreplace: departmentNumber\ndepartmentNumber: Vendas\n' },
+      { env, input: 'dn: uid=operator,ou=people,dc=example,dc=test\nchangetype: modify\nreplace: departmentNumber\ndepartmentNumber: Vendas\n' },
     );
     await request(app.getHttpServer()).get('/api/auth/me').set('Cookie', session!).expect(401);
   });

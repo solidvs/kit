@@ -31,7 +31,7 @@ const WINDOWS_CHROME = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/53
 
 const secret = () => randomBytes(18).toString('base64url');
 const values = {
-  ANA_PASSWORD: secret(),
+  OPERATOR_PASSWORD: secret(),
   BRUNO_PASSWORD: secret(),
   CLIENT_SECRET: secret(),
   EXAMPLE_CLIENT_SECRET: secret(),

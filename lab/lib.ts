@@ -52,7 +52,7 @@ function render(template: string, values: Record<string, string>): string {
   return Object.entries(values).reduce((text, [key, value]) => text.replaceAll(`{{${key}}}`, value), readFileSync(join(LAB_DIR, 'identity', template), 'utf8'));
 }
 
-type IdentityValues = 'ANA_PASSWORD' | 'BRUNO_PASSWORD' | 'CLIENT_SECRET' | 'EXAMPLE_CLIENT_SECRET' | 'LDAP_ADMIN_PASSWORD'
+type IdentityValues = 'OPERATOR_PASSWORD' | 'BRUNO_PASSWORD' | 'CLIENT_SECRET' | 'EXAMPLE_CLIENT_SECRET' | 'LDAP_ADMIN_PASSWORD'
   | 'CARLA_PASSWORD' | 'CARLA_OTP_SECRET' | 'PARTNER_CLIENT_SECRET';
 
 /**
